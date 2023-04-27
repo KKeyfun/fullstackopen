@@ -6,6 +6,14 @@ const Button = (props) => {
   )
 }
 
+const Text = (props) => {
+  return (
+    <div>
+      {props.text}
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -19,22 +27,45 @@ const App = () => {
   ]
 
   // Generate number from 0-7
-  const generateRandom = () => {
-    return Math.floor(Math.random() * 8);
+  const generateRandom = (num) => {
+    for(let i=0;i<num;i++){
+
+    }
+    return Math.floor(Math.random() * (num + 1));
+  }
+
+  // Generate Vote Object
+  const generateVoteObject = () => {
+    const voteObject = {};
+    for(let i=0;i<anecdotes.length;i++){
+      voteObject[i] = 0;
+    }
+    return voteObject;
   }
 
   // Set new random Anecdote
   const randomAnecdote = () => {
-    setSelected(generateRandom());
+    let randNum = generateRandom(7);
+    setSelected(randNum);
+  }
+
+  const vote = () => {
+    const copy = {...votes};
+    copy[selected] += 1;
+    setVotes(copy);
   }
    
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(generateVoteObject());
 
   return (
     <div>
       {anecdotes[selected]}
       <br/>
-      <Button text='Next Anecdote' clickHandler={randomAnecdote}/>
+      <Text text={'Has ' + votes[selected] + ' Votes'} />
+      <br/>
+      <Button text='Vote' clickHandler={vote} />
+      <Button text='Next Anecdote' clickHandler={randomAnecdote} />
     </div>
   )
 }
