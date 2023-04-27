@@ -1,124 +1,40 @@
 import { useState } from 'react'
 
-const StatisticLine = ({text,value}) => {
+const Button = (props) => {
   return (
-    <tr>
-      <td>{text}</td>
-      <td>{value}</td>
-    </tr>
-  )
-}
-
-const Header = ({text}) => {
-  return (
-    <h2>{text}</h2>
-  )
-}
-
-const Button = ({handleClick, text}) => {
-  return (
-    <button 
-      onClick={handleClick}>
-      {text}
-    </button>
-  )
-}
-
-const Statistics = ({stats,allReviews}) => {
-  const statsArray = [];
-  if(!allReviews){
-    return <div>No Feedback Given</div>
-  } else {
-    stats.forEach(e => {
-      if(e.length === 2){
-        statsArray.push(<StatisticLine key={e[0]} text={e[0]} value={e[1]}/>);
-      } else {
-        statsArray.push(<StatisticLine key={e[0]} text={e[0]} value={e[1] + e[2]}/>);
-      }
-    })
-  }
-  console.log(statsArray)
-  return (
-    <table>
-      <tbody>
-      {statsArray}
-      </tbody>
-    </table>
+    <button onClick={props.clickHandler}>{props.text}</button>
   )
 }
 
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [allReviews, setAllReviews] = useState(0);
-  const [average, setAverage] = useState();
-  const [positive, setPositive] = useState(100);
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
 
-  const increaseGoodByOne = () => {
-    let updatedGood = good+1;
-    let updatedAllReviews = allReviews+1;
-
-    setGood(updatedGood);
-    setAllReviews(updatedAllReviews);
-
-    updateAverage(updatedGood,bad,updatedAllReviews);
-    updatePercentage(updatedGood,updatedAllReviews);
+  // Generate number from 0-7
+  const generateRandom = () => {
+    return Math.floor(Math.random() * 8);
   }
 
-  const increaseNeutralByOne = () => {
-    let updatedNeutral = neutral+1;
-    let updatedAllReviews = allReviews+1;
-
-    setNeutral(updatedNeutral);
-    setAllReviews(updatedAllReviews);
-
-    updateAverage(good,bad,updatedAllReviews);
-    updatePercentage(good,updatedAllReviews);
+  // Set new random Anecdote
+  const randomAnecdote = () => {
+    setSelected(generateRandom());
   }
-
-  const increaseBadByOne = () => {
-    let updatedBad = bad+1;
-    let updatedAllReviews = allReviews+1;
-
-    setBad(updatedBad);
-    setAllReviews(updatedAllReviews);
-
-    updateAverage(good,updatedBad,updatedAllReviews);
-    updatePercentage(good,updatedAllReviews);
-  }
-
-  const calculateScore = (good, bad) => {
-    return (good * 1) + (bad * -1);
-  }
-
-  const updateAverage = (good,bad,allReviews) => {
-    console.log('good',good)
-    console.log('neutral',neutral)
-    console.log('bad',bad)
-    console.log('allReviews',allReviews)
-    if(allReviews > 0){
-      let average = calculateScore(good,bad)/allReviews;
-      setAverage(average);
-    }
-  }
-
-  const updatePercentage = (goodReviews,allReviews) => {
-    if(allReviews!==0){
-      setPositive((goodReviews/(allReviews))*100);
-    }
-  }
+   
+  const [selected, setSelected] = useState(0);
 
   return (
     <div>
-      <Header text='Give Feedback' />
-      <Button handleClick={increaseGoodByOne} text='Good'/>
-      <Button handleClick={increaseNeutralByOne} text='Neutral'/>
-      <Button handleClick={increaseBadByOne} text='Bad'/>
-
-      <Header text='Statistics' />
-      <Statistics stats={[['Good',good],['Neutral',neutral],['Bad',bad],['All',allReviews],['Average',average],['Positive',positive,'%']]} allReviews={allReviews}/>
+      {anecdotes[selected]}
+      <br/>
+      <Button text='Next Anecdote' clickHandler={randomAnecdote}/>
     </div>
   )
 }
