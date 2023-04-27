@@ -23,6 +23,22 @@ const Button = ({handleClick, text}) => {
   )
 }
 
+const Statistics = ({stats}) => {
+  const statsArray = [];
+  stats.forEach(e => {
+    if(e.length === 2){
+      statsArray.push(<Display text={e[0]} value={e[1]}/>);
+    } else {
+      statsArray.push(<Display text={e[0]} value={e[1] + e[2]}/>);
+    }
+  })
+  return (
+    <>
+      {statsArray}
+    </>
+  )
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -94,12 +110,7 @@ const App = () => {
       <Button handleClick={increaseBadByOne} text='Bad'/>
 
       <Header text='Statistics' />
-      <Display text='Good' value={good}/>
-      <Display text='Neutral' value={neutral}/>
-      <Display text='Bad' value={bad}/>
-      <Display text='All' value={allReviews}/>
-      <Display text='Average' value={average}/>
-      <Display text='Positive' value={positive + '%'}/>
+      <Statistics stats={[['Good',good],['Neutral',neutral],['Bad',bad],['All',allReviews],['Average',average],['Positive',positive,'%']]}/>
     </div>
   )
 }
