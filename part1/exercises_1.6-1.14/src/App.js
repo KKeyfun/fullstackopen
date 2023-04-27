@@ -6,6 +6,14 @@ const Button = (props) => {
   )
 }
 
+const Header = (props) => {
+  return (
+    <h2>
+      {props.text}
+    </h2>
+  )
+}
+
 const Text = (props) => {
   return (
     <div>
@@ -52,20 +60,29 @@ const App = () => {
   const vote = () => {
     const copy = {...votes};
     copy[selected] += 1;
+    if(copy[selected]>copy[mostVotes]){
+      setMostVotes(selected);
+    }
     setVotes(copy);
   }
    
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(generateVoteObject());
+  const [mostVotes, setMostVotes] = useState(0);
 
   return (
     <div>
+      <Header text='Anecdote of the day' />
       {anecdotes[selected]}
       <br/>
       <Text text={'Has ' + votes[selected] + ' Votes'} />
       <br/>
       <Button text='Vote' clickHandler={vote} />
       <Button text='Next Anecdote' clickHandler={randomAnecdote} />
+      <br/>
+      <Header text='Anecdote with the most votes' />
+      {anecdotes[mostVotes]}
+      <Text text={'Has ' + votes[mostVotes] + ' Votes'} />
     </div>
   )
 }
