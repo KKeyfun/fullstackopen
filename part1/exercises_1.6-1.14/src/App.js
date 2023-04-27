@@ -23,15 +23,20 @@ const Button = ({handleClick, text}) => {
   )
 }
 
-const Statistics = ({stats}) => {
+const Statistics = ({stats,allReviews}) => {
   const statsArray = [];
-  stats.forEach(e => {
-    if(e.length === 2){
-      statsArray.push(<Display text={e[0]} value={e[1]}/>);
-    } else {
-      statsArray.push(<Display text={e[0]} value={e[1] + e[2]}/>);
-    }
-  })
+  if(!allReviews){
+    statsArray.push(<Display text={'No Feedback Given'} />);
+  } else {
+    stats.forEach(e => {
+      if(e.length === 2){
+        statsArray.push(<Display text={e[0]} value={e[1]}/>);
+      } else {
+        statsArray.push(<Display text={e[0]} value={e[1] + e[2]}/>);
+      }
+    })
+  }
+  
   return (
     <>
       {statsArray}
@@ -110,7 +115,7 @@ const App = () => {
       <Button handleClick={increaseBadByOne} text='Bad'/>
 
       <Header text='Statistics' />
-      <Statistics stats={[['Good',good],['Neutral',neutral],['Bad',bad],['All',allReviews],['Average',average],['Positive',positive,'%']]}/>
+      <Statistics stats={[['Good',good],['Neutral',neutral],['Bad',bad],['All',allReviews],['Average',average],['Positive',positive,'%']]} allReviews={allReviews}/>
     </div>
   )
 }
