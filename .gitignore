@@ -7,10 +7,11 @@ node_modules
 
 # testing
 /coverage
+Practice
 
 # production
 /build
-public
+\public
 
 # misc
 .DS_Store
@@ -22,7 +23,7 @@ public
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.gitignore
-.package.json
-.package-lock.json
-README.md
+\.gitignore
+\package.json
+\package-lock.json
+\README.md
