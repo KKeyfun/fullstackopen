@@ -2,10 +2,17 @@ import { useState } from 'react';
 
 function App() {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '123-456-7890' },
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
   ]);
+
+  const [filteredPersons, setFiltered] = useState([...persons]);
+
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [search, setSearch] = useState('');
 
   function checkIssues(name, number) {
     for (const person of persons) {
@@ -17,6 +24,15 @@ function App() {
       }
     }
     return false;
+  }
+
+  function updateSearch(event) {
+    setSearch(event.target.value);
+    if (!event.target.value) {
+      setFiltered(persons);
+    } else {
+      setFiltered(persons.filter((person) => person.name.toLowerCase().includes(event.target.value.toLowerCase())));
+    }
   }
 
   function updateNameInput(event) {
@@ -55,6 +71,11 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        Filter shown with
+        <input onChange={updateSearch} value={search} />
+      </div>
+      <h2>Add new entry</h2>
       <form>
         <div>
           name:
@@ -76,7 +97,7 @@ function App() {
         {' '}
         {newName}
       </div>
-      <Display list={persons} />
+      <Display list={filteredPersons} />
     </div>
   );
 }
