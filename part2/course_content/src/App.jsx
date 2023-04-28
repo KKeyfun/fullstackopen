@@ -4,8 +4,21 @@ function Course({ course }) {
   return (
     <>
       <Header text={course.name} />
-      {course.parts.map((part) => <Part key={part.id} name={part.name} exercises={part.exercises} />)}
+      <Content course={course} />
+      <b>
+        Total of
+        {' '}
+        {course.parts.reduce((acc, curr) => acc += curr.exercises, 0)}
+        {' '}
+        exercises
+      </b>
     </>
+  );
+}
+
+function Content({ course }) {
+  return (
+    course.parts.map((part) => <Part key={part.id} name={part.name} exercises={part.exercises} />)
   );
 }
 
@@ -15,7 +28,7 @@ function Header({ text }) {
   );
 }
 
-function Part({ id, name, exercises }) {
+function Part({ name, exercises }) {
   return (
     <p>
       {name}
