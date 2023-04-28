@@ -6,20 +6,35 @@ function App() {
   ]);
   const [newName, setNewName] = useState('');
 
+  function checkIssues(name) {
+    for (const person of persons) {
+      if (person.name === name) {
+        return 'nameConflict';
+      }
+      if (name === '') {
+        return 'empty';
+      }
+    }
+    return false;
+  }
+
   function newPerson(event) {
     setNewName(event.target.value);
-    console.log(event.target.value, 'typing');
   }
 
   function addPerson(event) {
     event.preventDefault();
-    console.log(event, 'clicked');
-    setPersons(persons.concat({ name: newName }));
-    setNewName('');
+    if (checkIssues(newName) === 'nameConflict') {
+      alert(`${newName} is already in phonebook`);
+    } else if (checkIssues(newName) === 'empty') {
+      alert('Name field is empty');
+    } else {
+      setPersons(persons.concat({ name: newName }));
+      setNewName('');
+    }
   }
 
   function Display({ list }) {
-    console.log(list);
     return (
       list.map((person) => <li key={person.name}>{person.name}</li>)
     );
