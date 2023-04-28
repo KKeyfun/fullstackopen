@@ -1,4 +1,34 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { useState } from 'react';
+
+function Header({ text }) {
+  return (
+    <h2>{text}</h2>
+  );
+}
+
+function Input({ label, value, event }) {
+  return (
+    <div>
+      <label>{label}</label>
+      <input onChange={event} value={value} />
+    </div>
+
+  );
+}
+
+function PersonForm({ inputs, button }) {
+  return (
+    <div>
+      <form>
+        <Header text="Add new entry" />
+        {inputs.map((input) => <Input key={input.label} label={input.label} value={input.value} event={input.event} />)}
+        <button type="submit" onClick={button.event}>Add</button>
+      </form>
+    </div>
+
+  );
+}
 
 function App() {
   const [persons, setPersons] = useState([
@@ -49,6 +79,8 @@ function App() {
       setPersons(persons.concat({ name: newName, number: newNumber }));
       setNewName('');
       setNewNumber('');
+      setSearch('');
+      setFiltered(persons.concat({ name: newName, number: newNumber }));
     }
   }
 
@@ -70,33 +102,29 @@ function App() {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <div>
-        Filter shown with
-        <input onChange={updateSearch} value={search} />
-      </div>
-      <h2>Add new entry</h2>
-      <form>
-        <div>
-          name:
-          {' '}
-          <input onChange={updateNameInput} value={newName} />
-        </div>
-        <div>
-          number:
-          {' '}
-          <input value={newNumber} onChange={updateNumberInput} />
-        </div>
-        <div>
-          <button type="submit" onClick={addPerson}>add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <div>
-        debug:
-        {' '}
-        {newName}
-      </div>
+      <Header text="Phonebook" />
+      <Input label="Filter shown with:" value={search} event={updateSearch} />
+      <PersonForm
+        inputs={[
+          {
+            label: 'Name:',
+            value: newName,
+            event: updateNameInput,
+          },
+          {
+            label: 'Number:',
+            value: newNumber,
+            event: updateNumberInput,
+          },
+        ]}
+        button={
+        {
+          event: addPerson,
+        }
+      }
+      />
+
+      <Header text="Numbers" />
       <Display list={filteredPersons} />
     </div>
   );
