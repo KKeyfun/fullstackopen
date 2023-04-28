@@ -1,7 +1,6 @@
 import './App.css';
 
 function Course({ courses }) {
-  console.log(courses);
   return (
     courses.map((course) => (
       <>
