@@ -9,6 +9,30 @@ function Header({ text }) {
   );
 }
 
+function StatusMessage({ text, type }) {
+  if (text === null) {
+    return null;
+  }
+  const errorStyle = {
+    border: '3px solid red',
+    color: 'red',
+    fontSize: 32,
+    backgroundColor: 'gray',
+  };
+  const okStyle = {
+    border: '3px solid green',
+    color: 'green',
+    fontSize: 32,
+    backgroundColor: 'gray',
+  };
+
+  return (
+    <div className="status" style={type === 'error' ? errorStyle : okStyle}>
+      {text}
+    </div>
+  );
+}
+
 function Input({ label, value, event }) {
   return (
     <div>
@@ -46,16 +70,25 @@ function App() {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [search, setSearch] = useState('');
+  const [statusMessage, setStatusMessage] = useState([null, 'ok']);
 
   useEffect(() => {
     peopleService
       .getPeople()
       .then((initialPeople) => {
-        // console.log(initialPeople);
         setPersons(initialPeople);
         setFiltered(initialPeople);
       });
   }, []);
+
+  function updateStatus(...[text, type]) {
+    if (text === null) {
+      setStatusMessage(null);
+    } else {
+      setStatusMessage([text, type]);
+    }
+    setTimeout(() => { setStatusMessage([null, 'ok']); }, 5000);
+  }
 
   function checkIssues(name, number) {
     for (const person of persons) {
@@ -116,6 +149,7 @@ function App() {
           setNewNumber('');
           setSearch('');
           setFiltered(persons.concat(returnedPerson));
+          updateStatus(`Successfully added ${newName}`, 'ok');
         });
     }
   }
@@ -132,7 +166,11 @@ function App() {
             setPersons(filteredPeople);
             setSearch('');
             setFiltered(filteredPeople);
+            updateStatus(`Successfully deleted ${p.name}`, 'ok');
           }
+        })
+        .catch((error) => {
+          updateStatus(`${error.message} : ${p.name} doesn't exist`, 'error');
         });
     }
   }
@@ -157,6 +195,7 @@ function App() {
   return (
     <div>
       <Header text="Phonebook" />
+      <StatusMessage text={statusMessage[0]} type={statusMessage[1]} />
       <Input label="Filter shown with:" value={search} event={updateSearch} />
       <PersonForm
         inputs={[

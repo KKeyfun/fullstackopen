@@ -13,12 +13,16 @@ const createPerson = (name, number) => {
 };
 
 const deletePerson = (id) => {
-  const request = axios.delete(`${url}/${id}`).catch((error) => console.log(error));
-  return request.then((response) => response.status);
+  const request = axios.delete(`${url}/${id}`);
+  return request.then((response) => {
+    if (response.status === 404) {
+      return response;
+    } return response.status;
+  });
 };
 
 const updatePerson = (person) => {
-  const request = axios.put(`${url}/${person.id}`, person).catch((error) => console.log(error));
+  const request = axios.put(`${url}/${person.id}`, person);
   return request.then((response) => response.data);
 };
 
