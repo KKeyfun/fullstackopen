@@ -51,7 +51,7 @@ function App() {
     peopleService
       .getPeople()
       .then((initialPeople) => {
-        console.log(initialPeople);
+        // console.log(initialPeople);
         setPersons(initialPeople);
         setFiltered(initialPeople);
       });
@@ -69,15 +69,6 @@ function App() {
     }
     return false;
   }
-
-  // function nameExists(name) {
-  //   for (const person of persons) {
-  //     if (person.name === name) {
-  //       return person.id;
-  //     }
-  //   }
-  //   return false;
-  // }
 
   function updateSearch(event) {
     setSearch(event.target.value);
@@ -97,23 +88,25 @@ function App() {
     const checkIssueReturn = checkIssues(newName, newNumber);
     if (checkIssueReturn === true) {
       alert(`${newName} : ${newNumber} is already in phonebook`);
-    } else if (typeof (checkIssueReturn) === 'object') {
-      const modifiedPerson = { ...checkIssueReturn, number: newNumber };
-      peopleService
-        .updatePerson(modifiedPerson)
-        .then((updatedPerson) => {
-          const updatedPeopleList = persons.map(
-            (person) => (person.id === updatedPerson.id ? updatedPerson : person),
-          );
-          console.log(updatedPeopleList);
-          setPersons(updatedPeopleList);
-          setNewName('');
-          setNewNumber('');
-          setSearch('');
-          setFiltered(updatedPeopleList);
-        });
     } else if (newName === '' || newNumber === '') {
       alert('Name/Number field is empty');
+    } else if (typeof (checkIssueReturn) === 'object') {
+      const overwrite = window.confirm('This person already exists. Do you want to update their phone number?');
+      if (overwrite) {
+        const modifiedPerson = { ...checkIssueReturn, number: newNumber };
+        peopleService
+          .updatePerson(modifiedPerson)
+          .then((updatedPerson) => {
+            const updatedPeopleList = persons.map(
+              (person) => (person.id === updatedPerson.id ? updatedPerson : person),
+            );
+            setPersons(updatedPeopleList);
+            setNewName('');
+            setNewNumber('');
+            setSearch('');
+            setFiltered(updatedPeopleList);
+          });
+      }
     } else {
       peopleService
         .createPerson(newName, newNumber)
