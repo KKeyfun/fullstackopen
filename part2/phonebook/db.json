@@ -26,14 +26,9 @@
       "id": 7
     },
     {
-      "name": "Robert D",
-      "number": "1111111",
+      "name": "Bob Jones",
+      "number": "123456",
       "id": 8
-    },
-    {
-      "name": "Berner",
-      "number": "1",
-      "id": 9
     }
   ]
 }

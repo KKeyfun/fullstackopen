@@ -120,18 +120,21 @@ function App() {
     }
   }
 
-  function deletePerson(id) {
-    peopleService
-      .deletePerson(id)
-      .then((status) => {
-        console.log(status, typeof (status));
-        if (status === 200) {
-          const filteredPeople = persons.filter((person) => person.id !== id);
-          setPersons(filteredPeople);
-          setSearch('');
-          setFiltered(filteredPeople);
-        }
-      });
+  function deletePerson(p) {
+    const confirmdelete = window.confirm(`Are you sure you want to delete ${p.name}?`);
+    if (confirmdelete) {
+      peopleService
+        .deletePerson(p.id)
+        .then((status) => {
+          console.log(status, typeof (status));
+          if (status === 200) {
+            const filteredPeople = persons.filter((person) => person.id !== p.id);
+            setPersons(filteredPeople);
+            setSearch('');
+            setFiltered(filteredPeople);
+          }
+        });
+    }
   }
 
   function updateNumberInput(event) {
@@ -145,7 +148,7 @@ function App() {
           {person.name}
           {' '}
           {person.number}
-          <Button clickHandler={() => { deletePerson(person.id); }} text="Delete" />
+          <Button clickHandler={() => { deletePerson(person); }} text="Delete" />
         </li>
       ))
     );
