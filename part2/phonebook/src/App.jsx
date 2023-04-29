@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useState } from 'react';
-import axios from 'axios';
 import { useEffect } from 'react';
+import peopleService from './services/persons';
 
 function Header({ text }) {
   return (
@@ -42,12 +42,12 @@ function App() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        console.log(response);
-        setPersons(response.data);
-        setFiltered(response.data);
+    peopleService
+      .getPeople()
+      .then((initialPeople) => {
+        console.log(initialPeople);
+        setPersons(initialPeople);
+        setFiltered(initialPeople);
       });
   }, []);
 
@@ -83,11 +83,15 @@ function App() {
     } else if (newName === '' || newNumber === '') {
       alert('Name/Number field is empty');
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName('');
-      setNewNumber('');
-      setSearch('');
-      setFiltered(persons.concat({ name: newName, number: newNumber }));
+      peopleService
+        .createPerson(newName, newNumber)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName('');
+          setNewNumber('');
+          setSearch('');
+          setFiltered(persons.concat(returnedPerson));
+        });
     }
   }
 
