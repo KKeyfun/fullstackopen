@@ -59,15 +59,25 @@ function App() {
 
   function checkIssues(name, number) {
     for (const person of persons) {
-      if (person.name === name) {
+      if (person.name.toLowerCase() === name.toLowerCase() && person.number === number) {
         return true;
       }
-      if (person.number === number) {
-        return true;
+      if (person.name.toLowerCase() === name.toLowerCase()) {
+        console.log(person, typeof (person));
+        return person;
       }
     }
     return false;
   }
+
+  // function nameExists(name) {
+  //   for (const person of persons) {
+  //     if (person.name === name) {
+  //       return person.id;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   function updateSearch(event) {
     setSearch(event.target.value);
@@ -84,8 +94,24 @@ function App() {
 
   function addPerson(event) {
     event.preventDefault();
-    if (checkIssues(newName, newNumber)) {
-      alert(`${newName} or ${newNumber} is already in phonebook`);
+    const checkIssueReturn = checkIssues(newName, newNumber);
+    if (checkIssueReturn === true) {
+      alert(`${newName} : ${newNumber} is already in phonebook`);
+    } else if (typeof (checkIssueReturn) === 'object') {
+      const modifiedPerson = { ...checkIssueReturn, number: newNumber };
+      peopleService
+        .updatePerson(modifiedPerson)
+        .then((updatedPerson) => {
+          const updatedPeopleList = persons.map(
+            (person) => (person.id === updatedPerson.id ? updatedPerson : person),
+          );
+          console.log(updatedPeopleList);
+          setPersons(updatedPeopleList);
+          setNewName('');
+          setNewNumber('');
+          setSearch('');
+          setFiltered(updatedPeopleList);
+        });
     } else if (newName === '' || newNumber === '') {
       alert('Name/Number field is empty');
     } else {
