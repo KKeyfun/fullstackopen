@@ -19,13 +19,19 @@ function Input({ label, value, event }) {
   );
 }
 
+function Button({ clickHandler, text }) {
+  return (
+    <button onClick={clickHandler}>{text}</button>
+  );
+}
+
 function PersonForm({ inputs, button }) {
   return (
     <div>
       <form>
         <Header text="Add new entry" />
         {inputs.map((input) => <Input key={input.label} label={input.label} value={input.value} event={input.event} />)}
-        <button type="submit" onClick={button.event}>Add</button>
+        <Button clickHandler={button.event} text="Add" />
       </form>
     </div>
 
@@ -95,6 +101,20 @@ function App() {
     }
   }
 
+  function deletePerson(id) {
+    peopleService
+      .deletePerson(id)
+      .then((status) => {
+        console.log(status, typeof (status));
+        if (status === 200) {
+          const filteredPeople = persons.filter((person) => person.id !== id);
+          setPersons(filteredPeople);
+          setSearch('');
+          setFiltered(filteredPeople);
+        }
+      });
+  }
+
   function updateNumberInput(event) {
     setNewNumber(event.target.value);
   }
@@ -102,10 +122,11 @@ function App() {
   function Display({ list }) {
     return (
       list.map((person) => (
-        <li key={person.name}>
+        <li key={person.id}>
           {person.name}
           {' '}
           {person.number}
+          <Button clickHandler={() => { deletePerson(person.id); }} text="Delete" />
         </li>
       ))
     );
