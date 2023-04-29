@@ -23,7 +23,11 @@ const deletePerson = (id) => {
 
 const updatePerson = (person) => {
   const request = axios.put(`${url}/${person.id}`, person);
-  return request.then((response) => response.data);
+  return request.then((response) => {
+    if (response.status === 404) {
+      return response;
+    } return response.data;
+  });
 };
 
 export default {

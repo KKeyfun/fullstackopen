@@ -138,6 +138,9 @@ function App() {
             setNewNumber('');
             setSearch('');
             setFiltered(updatedPeopleList);
+          })
+          .catch((error) => {
+            updateStatus(`${error.message} : ${newName} doesn't exist`, 'error');
           });
       }
     } else {
