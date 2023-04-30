@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import countryService from './services/countries';
+import weatherService from './services/weather';
 
 function ListItem({ country }) {
   const [active, setActive] = useState(false);
@@ -45,28 +46,60 @@ function UnorderedList({ array }) {
 }
 
 function CountryView({ country }) {
-  return (
-    <div className="countryView">
-      <h2>{country.name.official}</h2>
-      <br />
-      <div>
-        Capital:
-        {' '}
-        {country.capital[0]}
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const requestWeather = weatherService(country.capital[0]);
+    requestWeather.then((data) => setWeather(data));
+  }, []);
+
+  if (weather) {
+    return (
+      <div className="countryView">
+        <h2>{country.name.official}</h2>
+        <br />
+        <div>
+          Capital:
+          {' '}
+          {country.capital[0]}
+        </div>
+        <div>
+          Area:
+          {' '}
+          {country.area}
+        </div>
+        <br />
+        <b>Languages:</b>
+        <ul>
+          {Object.keys(country.languages).map((key) => <li key={country.languages[key]}>{country.languages[key]}</li>)}
+        </ul>
+        <img src={country.flags.png} alt={country.flags.alt} />
+        <h2>
+          Weather In
+          {' '}
+          {country.capital[0]}
+        </h2>
+        <div>
+          {weather.weather[0].description}
+        </div>
+        <div>
+          Temperature:
+          {' '}
+          {weather.main.temp}
+          {' '}
+          Celsius
+        </div>
+        <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description} />
+        <div>
+          Wind:
+          {' '}
+          {weather.wind.speed}
+          {' '}
+          m/s
+        </div>
       </div>
-      <div>
-        Area:
-        {' '}
-        {country.area}
-      </div>
-      <br />
-      <b>Languages:</b>
-      <ul>
-        {Object.keys(country.languages).map((key) => <li key={country.languages[key]}>{country.languages[key]}</li>)}
-      </ul>
-      <img src={country.flags.png} alt={country.flags.alt} />
-    </div>
-  );
+    );
+  }
 }
 
 function App() {
