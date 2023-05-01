@@ -1,10 +1,14 @@
 // Phonebook backend with express
 const express = require('express');
+const morgan = require('morgan');
 const phonebook = require('./expressRequestMethods/controllerExpress');
 
 const app = express();
 
+morgan('tiny');
+morgan.token('body', (request, response) => (JSON.stringify(request.body)));
 app.use(express.json());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 // Routes
 
 // Individual note route
@@ -26,7 +30,7 @@ app.get('/info', (request, response) => {
 
 // New note route
 app.post('/api/phonebook', (request, response) => {
-  phonebook.addEntry(request.body, response);
+  phonebook.addEntry(request, response);
 });
 
 // Delete note route
