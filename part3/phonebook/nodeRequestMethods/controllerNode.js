@@ -1,5 +1,21 @@
 let data = require('../data/phonebook');
 
+function countPeople() {
+  return data.length;
+}
+
+async function checkValid(requestData) {
+  return new Promise((resolve, reject) => {
+    const { name, number } = JSON.parse(requestData);
+    if (!name || !number) {
+      reject(new Error('Empty name or number field'));
+    } else if (data.find((entry) => entry.name === name)) {
+      reject(new Error('Name already exists'));
+    }
+    resolve(requestData);
+  });
+}
+
 async function getPhonebook() {
   return new Promise((resolve) => resolve(data));
 }
@@ -21,12 +37,12 @@ async function getPhonebookEntry(id) {
 async function addEntry(newEntry) {
   return new Promise((resolve) => {
     const entryObj = JSON.parse(newEntry);
+
     const entry = {
       id: (Math.floor(Math.random() * 100) + 3),
       ...entryObj,
     };
     data = data.concat(entry);
-    console.log(entry);
     // Return new entry
     resolve(entry);
   });
@@ -69,5 +85,5 @@ async function updateEntry(id, requestData) {
 }
 
 module.exports = {
-  getPhonebook, getPhonebookEntry, addEntry, updateEntry, deleteEntry,
+  getPhonebook, getPhonebookEntry, addEntry, updateEntry, deleteEntry, checkValid, countPeople,
 };
