@@ -36,11 +36,12 @@ function getPhonebookEntry(response, id) {
   if (target) {
     response.json(target);
   } else {
-    response.status(404).end();
+    response.status(404).json({ error: 'Entry not found' }).end();
   }
 }
 
-function addEntry(response, personData) {
+function addEntry(request, response) {
+  const personData = request.body;
   const error = checkValid(personData, response);
   if (error) {
     return;
@@ -59,7 +60,7 @@ function deleteEntry(response, id) {
     data = data.filter((entry) => entry.id !== target.id);
     response.json(data);
   } else {
-    response.status(404).end();
+    response.status(404).json({ error: 'Entry not found' }).end();
   }
 }
 
@@ -79,7 +80,7 @@ async function updateEntry(response, { name, number }, id) {
     });
     response.json(data);
   } else {
-    response.status(404).end();
+    response.status(404).json({ error: 'Entry not found' }).end();
   }
 }
 
