@@ -139,7 +139,8 @@ function App() {
             setFiltered(updatedPeopleList);
           })
           .catch((error) => {
-            updateStatus(`${error.message} : ${newName} doesn't exist`, 'error');
+            updateStatus(`${error.message}`, 'error');
+            console.log(error.response.data.error);
           });
       }
     } else {
@@ -152,6 +153,10 @@ function App() {
           setSearch('');
           setFiltered(persons.concat(returnedPerson));
           updateStatus(`Successfully added ${newName}`, 'ok');
+        })
+        .catch((error) => {
+          updateStatus(`${error.message}`, 'error');
+          console.log(error.response.data.error);
         });
     }
   }
